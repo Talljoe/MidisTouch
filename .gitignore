@@ -1,0 +1,10 @@
+TestResults
+_ReSharper.*
+bin
+obj
+*.suo
+*.user
+*.resharper
+*.resharper.user
+*.ReSharper
+*.ReSharper.user
