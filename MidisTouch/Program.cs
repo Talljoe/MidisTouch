@@ -4,6 +4,7 @@ namespace MidisTouch
 {
     using System;
     using System.Linq;
+    using System.Threading;
     using Midis;
 
     internal class Program
@@ -22,8 +23,20 @@ namespace MidisTouch
             var outPorts = e.GetOutputDevices();
             foreach (var port in outPorts)
             {
-                Console.WriteLine("  Out {0} - {1}: [{2}] {3}", port.PortId, port.Name, port.PortType,
+                Console.WriteLine("  Out {0} - {1}: [{2}] {3}", port.Id, port.Name, port.PortType,
                                   String.Concat(port.WChannelMask.Cast<bool>().Select(b => b ? 'Y' : 'N')));
+                using(var p = e.OpenMidiOut(port.Id))
+                {
+                    var c = p.OpenChannels(1, 3, 5);
+                    var c2 = p.OpenChannels(5);
+                    c.NoteOn(64);
+                    Thread.Sleep(2000);
+                    c2.NoteOff(64);
+                    c2.NoteOn(72);
+                    Thread.Sleep(2000);
+                    c.NoteOff(64);
+                    c.NoteOff(72);
+                }
             }
         }
     }

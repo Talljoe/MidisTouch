@@ -4,6 +4,9 @@ namespace Midis.Interop
 {
     public class NativeConstants
     {
+        /// CALLBACK_FUNCTION -> 0x00030000l
+        public const int CALLBACK_FUNCTION = 0x00030000;
+
         /// MMSYSERR_NOTSUPPORTED -> (MMSYSERR_BASE + 8)
         public const int MMSYSERR_NOTSUPPORTED = (MMSYSERR_BASE + 8);
 

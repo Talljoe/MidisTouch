@@ -21,6 +21,18 @@ namespace Midis
             return Enumerable.Range(0, NativeMethods.midiOutGetNumDevs()).Select(GetOutputDescriptor);
         }
 
+        public OutputPort OpenMidiOut(int portId)
+        {
+            return new OutputPort(portId,
+                                  callback =>
+                                      {
+                                          var handle = new IntPtr();
+                                          NativeMethods.midiOutOpen(ref handle, portId, callback, 0,
+                                                                    NativeConstants.CALLBACK_FUNCTION);
+                                          return handle;
+                                      });
+        }
+
         private static MidiInDescriptor GetInputDescriptor(int portId)
         {
             var caps = new tagMIDIINCAPSW();

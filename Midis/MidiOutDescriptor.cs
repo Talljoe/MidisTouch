@@ -6,22 +6,22 @@ namespace Midis
     using System.Collections;
 
     public class MidiOutDescriptor {
-        private readonly int portId;
+        private readonly int id;
         private readonly string name;
         private readonly PortType portType;
         private readonly BitArray wChannelMask;
 
-        public MidiOutDescriptor(int portId, string name, PortType portType, BitArray wChannelMask)
+        public MidiOutDescriptor(int id, string name, PortType portType, BitArray wChannelMask)
         {
-            this.portId = portId;
+            this.id = id;
             this.name = name;
             this.portType = portType;
             this.wChannelMask = wChannelMask;
         }
 
-        public int PortId
+        public int Id
         {
-            get { return this.portId; }
+            get { return this.id; }
         }
 
         public string Name

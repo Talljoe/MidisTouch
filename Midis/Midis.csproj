@@ -112,6 +112,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ChannelMessage.cs" />
     <Compile Include="Interop\HMIDIIN__.cs" />
     <Compile Include="Interop\HMIDIOUT__.cs" />
     <Compile Include="Interop\HMIDISTRM__.cs" />
@@ -130,6 +131,8 @@
     <Compile Include="Interop\NativeMethods.cs" />
     <Compile Include="MidiEnumerator.cs" />
     <Compile Include="MidiOutDescriptor.cs" />
+    <Compile Include="OutputChannel.cs" />
+    <Compile Include="OutputPort.cs" />
     <Compile Include="PortType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

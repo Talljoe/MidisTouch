@@ -8,6 +8,8 @@ namespace Midis.Interop
 
     public class NativeMethods
     {
+        public delegate void MidiOutProc(IntPtr handle, int message, int instance, int param1, int param2);
+
         ///Return Type: MMRESULT->UINT->unsigned int
         ///hmo: HMIDIOUT->HMIDIOUT__*
         ///uPatch: UINT->unsigned int
@@ -194,7 +196,7 @@ namespace Midis.Interop
         ///hmo: HMIDIOUT->HMIDIOUT__*
         ///dwMsg: DWORD->unsigned int
         [DllImport("winmm.dll", EntryPoint = "midiOutShortMsg")]
-        public static extern uint midiOutShortMsg(IntPtr hmo, uint dwMsg);
+        public static extern int midiOutShortMsg(IntPtr hmo, int dwMsg);
 
 
         ///Return Type: MMRESULT->UINT->unsigned int
@@ -291,7 +293,7 @@ namespace Midis.Interop
         ///dwInstance: DWORD_PTR->ULONG_PTR->unsigned int
         ///fdwOpen: DWORD->unsigned int
         [DllImport("winmm.dll", EntryPoint = "midiOutOpen")]
-        public static extern uint midiOutOpen(ref IntPtr phmo, uint uDeviceID, uint dwCallback, uint dwInstance,
+        public static extern uint midiOutOpen(ref IntPtr phmo, int uDeviceID, MidiOutProc dwCallback, uint dwInstance,
                                               uint fdwOpen);
 
 
