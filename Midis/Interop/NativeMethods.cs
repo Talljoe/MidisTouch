@@ -11,6 +11,7 @@ namespace Midis.Interop
         #region Delegates
 
         public delegate void MidiOutProc(IntPtr handle, int message, int instance, int param1, int param2);
+        public delegate void MidiInProc(IntPtr handle, int message, int instance, int param1, int param2);
 
         #endregion
 
@@ -347,7 +348,7 @@ namespace Midis.Interop
         ///dwInstance: DWORD_PTR->ULONG_PTR->unsigned int
         ///fdwOpen: DWORD->unsigned int
         [DllImport("winmm.dll", EntryPoint = "midiInOpen")]
-        public static extern uint midiInOpen(ref IntPtr phmi, uint uDeviceID, uint dwCallback, uint dwInstance,
+        public static extern uint midiInOpen(ref IntPtr phmi, int uDeviceID, MidiInProc dwCallback, uint dwInstance,
                                              uint fdwOpen);
     }
 }

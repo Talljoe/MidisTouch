@@ -112,10 +112,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Abstraction\IInputDevice.cs" />
     <Compile Include="Abstraction\InputDeviceDescriptor.cs" />
     <Compile Include="Abstraction\OutputDeviceDescriptor.cs" />
     <Compile Include="ChannelMessage.cs" />
     <Compile Include="Abstraction\IMidiHAL.cs" />
+    <Compile Include="InputPort.cs" />
+    <Compile Include="Interop\InteropDeviceBase.cs" />
+    <Compile Include="Interop\InteropInputDevice.cs" />
     <Compile Include="Interop\InteropMidiHAL.cs" />
     <Compile Include="Interop\InteropOutputDevice.cs" />
     <Compile Include="Interop\HMIDIIN__.cs" />

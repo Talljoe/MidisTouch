@@ -45,6 +45,11 @@ namespace Midis.Interop
                                               caps.vDriverVersion, caps.wMid, caps.wPid);
         }
 
+        public IInputDevice OpenInputDevice(int portId)
+        {
+            return new InteropInputDevice(portId);
+        }
+
         public IOutputDevice OpenOutputDevice(int portId)
         {
             return new InteropOutputDevice(portId);

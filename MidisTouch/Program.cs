@@ -39,11 +39,10 @@ namespace MidisTouch
                 using(var p = e.OpenMidiOut(port.Id))
                 {
                     var c = p.OpenChannels(1, 3, 5);
-                    var c2 = p.OpenChannels(5);
                     c.NoteOn(64);
                     Thread.Sleep(2000);
-                    c2.NoteOff(64);
-                    c2.NoteOn(72);
+                    p.SendChannel(5, ChannelMessage.NoteOff, 64, 0);
+                    p.SendChannel(5, ChannelMessage.NoteOn, 72, 127);
                     Thread.Sleep(2000);
                     c.NoteOff(64);
                     c.NoteOff(72);

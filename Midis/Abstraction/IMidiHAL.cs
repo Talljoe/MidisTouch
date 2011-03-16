@@ -7,6 +7,7 @@ namespace Midis.Abstraction
         int GetInputDeviceCount();
         int GetOutputDeviceCount();
         IOutputDevice OpenOutputDevice(int portId);
+        IInputDevice OpenInputDevice(int portId);
         InputDeviceDescriptor GetInputDescriptor(int portId);
         OutputDeviceDescriptor GetOutputDescriptor(int portId);
     }

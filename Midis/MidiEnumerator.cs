@@ -34,6 +34,11 @@ namespace Midis
                 .Select(d => new MidiOutDescriptor(d.Id, d.Name, d.PortType, d.WChannelMask));
         }
 
+        public InputPort OpenMidiIn(int portId)
+        {
+            return new InputPort(portId, this.hal.OpenInputDevice(portId));
+        }
+
         public OutputPort OpenMidiOut(int portId)
         {
             return new OutputPort(portId, this.hal.OpenOutputDevice(portId));

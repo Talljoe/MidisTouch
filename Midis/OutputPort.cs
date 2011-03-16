@@ -32,7 +32,7 @@ namespace Midis
             this.Dispose(false);
         }
 
-        protected virtual Dispose(bool disposing)
+        protected virtual void Dispose(bool disposing)
         {
             if (disposing)
             {
