@@ -8,7 +8,11 @@ namespace Midis.Interop
 
     public class NativeMethods
     {
+        #region Delegates
+
         public delegate void MidiOutProc(IntPtr handle, int message, int instance, int param1, int param2);
+
+        #endregion
 
         ///Return Type: MMRESULT->UINT->unsigned int
         ///hmo: HMIDIOUT->HMIDIOUT__*

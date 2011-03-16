@@ -6,12 +6,23 @@ namespace MidisTouch
     using System.Linq;
     using System.Threading;
     using Midis;
+    using Midis.Abstraction;
+    using Midis.Interop;
+    using Ninject;
 
     internal class Program
     {
+        private static IKernel GetNinjectKernel()
+        {
+            var kernel = new StandardKernel();
+            kernel.Bind<IMidiHAL>().To<InteropMidiHAL>();
+            return kernel;
+        }
+
         private static void Main()
         {
-            var e = new MidiEnumerator();
+            var kernel = GetNinjectKernel();
+            var e = kernel.Get<MidiEnumerator>();
             Console.WriteLine("Ports:");
 
             var inPorts = e.GetInputDevices();

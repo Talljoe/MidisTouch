@@ -8,14 +8,14 @@ namespace Midis
 
     public class OutputChannel
     {
-        private readonly OutputPort port;
         private readonly IEnumerable<int> channels;
+        private readonly OutputPort port;
 
         public OutputChannel(OutputPort port, IEnumerable<int> channels)
         {
-            if(port == null)
+            if (port == null)
                 throw new ArgumentNullException("port");
-            if(channels.Any(c => c < 0 || c > 15)) 
+            if (channels.Any(c => c < 0 || c > 15))
                 throw new ArgumentOutOfRangeException("channels", @"Invalid channel number");
 
             this.port = port;
@@ -24,12 +24,12 @@ namespace Midis
 
         public void NoteOn(int note, int velocity = 127)
         {
-            Send(ChannelMessage.NoteOn, note, velocity);
+            this.Send(ChannelMessage.NoteOn, note, velocity);
         }
 
         public void NoteOff(int note, int velocity = 0)
         {
-            Send(ChannelMessage.NoteOff, note, velocity);
+            this.Send(ChannelMessage.NoteOff, note, velocity);
         }
 
         private void Send(ChannelMessage message, int value1, int value2)

@@ -3,17 +3,17 @@
 namespace Midis
 {
     using System;
-    using Midis.Interop;
+    using Midis.Abstraction;
 
     public class OutputPort : IDisposable
     {
-        private readonly IntPtr handle;
+        private readonly IOutputDevice device;
         private readonly int id;
 
-        public OutputPort(int id, Func<NativeMethods.MidiOutProc, IntPtr> initFunction)
+        public OutputPort(int id, IOutputDevice device)
         {
             this.id = id;
-            this.handle = initFunction(HandleMessage);
+            this.device = device;
         }
 
         public int Id
@@ -32,27 +32,24 @@ namespace Midis
             this.Dispose(false);
         }
 
-        private static void HandleMessage(IntPtr intPtr, int message, int instance, int param1, int param2) {}
-
-        private void Dispose(bool disposing)
+        protected virtual Dispose(bool disposing)
         {
-            if(disposing)
+            if (disposing)
             {
-                // cleanup managed resources
+                this.device.Dispose();
             }
-            NativeMethods.midiOutClose(this.handle);
         }
 
         public void Send(int status, int val1, int val2)
         {
-            NativeMethods.midiOutShortMsg(this.handle, BitConverter.ToInt32(new[] { (byte)status, (byte)val1, (byte)val2, (byte)0 }, 0));
+            this.device.ShortMessage(BitConverter.ToInt32(new[] {(byte) status, (byte) val1, (byte) val2, (byte) 0}, 0));
         }
 
         public void SendChannel(int channel, ChannelMessage message, int val1, int val2)
         {
             if (channel < 0 || channel > 15)
                 throw new ArgumentOutOfRangeException("channel", @"Invalid channel number");
-            this.Send((int)message | channel, val1, val2);
+            this.Send((int) message | channel, val1, val2);
         }
 
         public OutputChannel OpenChannels(params int[] channels)

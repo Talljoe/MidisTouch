@@ -2,10 +2,10 @@
 // See included LICENSE for details.
 namespace Midis
 {
-    using System;
     using System.Collections;
 
-    public class MidiOutDescriptor {
+    public class MidiOutDescriptor
+    {
         private readonly int id;
         private readonly string name;
         private readonly PortType portType;

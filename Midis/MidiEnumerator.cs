@@ -3,58 +3,40 @@
 namespace Midis
 {
     using System;
-    using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Runtime.InteropServices;
-    using Midis.Interop;
+    using Midis.Abstraction;
 
     public class MidiEnumerator
     {
+        private readonly IMidiHAL hal;
+
+        public MidiEnumerator(IMidiHAL hal)
+        {
+            if (hal == null)
+            {
+                throw new ArgumentNullException("hal");
+            }
+            this.hal = hal;
+        }
+
         public IEnumerable<MidiInDescriptor> GetInputDevices()
         {
-            return Enumerable.Range(0, NativeMethods.midiInGetNumDevs()).Select(GetInputDescriptor);
+            return Enumerable.Range(0, this.hal.GetInputDeviceCount())
+                .Select(this.hal.GetInputDescriptor)
+                .Select(d => new MidiInDescriptor(d.Id, d.Name));
         }
 
         public IEnumerable<MidiOutDescriptor> GetOutputDevices()
         {
-            return Enumerable.Range(0, NativeMethods.midiOutGetNumDevs()).Select(GetOutputDescriptor);
+            return Enumerable.Range(0, this.hal.GetOutputDeviceCount())
+                .Select(this.hal.GetOutputDescriptor)
+                .Select(d => new MidiOutDescriptor(d.Id, d.Name, d.PortType, d.WChannelMask));
         }
 
         public OutputPort OpenMidiOut(int portId)
         {
-            return new OutputPort(portId,
-                                  callback =>
-                                      {
-                                          var handle = new IntPtr();
-                                          NativeMethods.midiOutOpen(ref handle, portId, callback, 0,
-                                                                    NativeConstants.CALLBACK_FUNCTION);
-                                          return handle;
-                                      });
-        }
-
-        private static MidiInDescriptor GetInputDescriptor(int portId)
-        {
-            var caps = new tagMIDIINCAPSW();
-            var result = NativeMethods.midiInGetDevCapsW(portId, ref caps, Marshal.SizeOf(caps));
-            if (result != NativeConstants.MMSYSERR_NOERROR)
-            {
-                throw new Exception(String.Format("MIDI Error: {0}", result));
-            }
-
-            return new MidiInDescriptor(portId, caps.szPname);
-        }
-
-        private static MidiOutDescriptor GetOutputDescriptor(int portId)
-        {
-            var caps = new tagMIDIOUTCAPSW();
-            var result = NativeMethods.midiOutGetDevCapsW(portId, ref caps, Marshal.SizeOf(caps));
-            if(result != NativeConstants.MMSYSERR_NOERROR)
-            {
-                throw new Exception(String.Format("MIDI Error: {0}", result));
-            }
-
-            return new MidiOutDescriptor(portId, caps.szPname, (PortType)caps.wTechnology, new BitArray(BitConverter.GetBytes(caps.wChannelMask)));
+            return new OutputPort(portId, this.hal.OpenOutputDevice(portId));
         }
     }
 }
