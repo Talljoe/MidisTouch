@@ -7,16 +7,41 @@ namespace Midis.Interop
 
     public class InteropInputDevice : InteropDeviceBase, IInputDevice
     {
+        private readonly NativeMethods.MidiInProc proc;
+
         public InteropInputDevice(int portId)
         {
-            NativeMethods.midiInOpen(ref this.Handle, portId, MidiProc, 0, NativeConstants.CALLBACK_FUNCTION);
+            this.proc = this.MidiProc;
+            NativeMethods.midiInOpen(out this.Handle, portId, this.proc, 0, NativeConstants.CALLBACK_FUNCTION);
+            NativeMethods.midiInStart(this.Handle);
         }
 
-        private static void MidiProc(IntPtr intPtr, int message, int instance, int param1, int param2) {}
+        public event EventHandler<ChannelMessageEventArgs> ChannelMessage;
+
+        private void MidiProc(IntPtr intPtr, int message, int instance, int param1, int param2)
+        {
+            if ((MidiInMessage) message == MidiInMessage.Data)
+            {
+                var bytes = BitConverter.GetBytes(param1);
+                int status = bytes[0];
+                if (status >= 0x80 && status <= 0xef)
+                {
+                    this.InvokeChannelMessage(new ChannelMessageEventArgs(
+                                                  status & 0xf0, bytes[0] & 0x0f, bytes[1], bytes[2]));
+                }
+            }
+        }
 
         protected override void CloseDevice()
         {
+            NativeMethods.midiInStop(this.Handle);
             NativeMethods.midiInClose(this.Handle);
+        }
+
+        private void InvokeChannelMessage(ChannelMessageEventArgs e)
+        {
+            var handler = this.ChannelMessage;
+            if (handler != null) handler(this, e);
         }
     }
 }

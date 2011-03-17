@@ -45,11 +45,11 @@ namespace Midis
             this.device.ShortMessage(BitConverter.ToInt32(new[] {(byte) status, (byte) val1, (byte) val2, (byte) 0}, 0));
         }
 
-        public void SendChannel(int channel, ChannelMessage message, int val1, int val2)
+        public void SendChannel(int channel, ChannelMessageType messageType, int val1, int val2)
         {
             if (channel < 0 || channel > 15)
                 throw new ArgumentOutOfRangeException("channel", @"Invalid channel number");
-            this.Send((int) message | channel, val1, val2);
+            this.Send((int) messageType | channel, val1, val2);
         }
 
         public OutputChannel OpenChannels(params int[] channels)

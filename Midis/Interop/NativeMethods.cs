@@ -10,8 +10,9 @@ namespace Midis.Interop
     {
         #region Delegates
 
-        public delegate void MidiOutProc(IntPtr handle, int message, int instance, int param1, int param2);
         public delegate void MidiInProc(IntPtr handle, int message, int instance, int param1, int param2);
+
+        public delegate void MidiOutProc(IntPtr handle, int message, int instance, int param1, int param2);
 
         #endregion
 
@@ -298,7 +299,7 @@ namespace Midis.Interop
         ///dwInstance: DWORD_PTR->ULONG_PTR->unsigned int
         ///fdwOpen: DWORD->unsigned int
         [DllImport("winmm.dll", EntryPoint = "midiOutOpen")]
-        public static extern uint midiOutOpen(ref IntPtr phmo, int uDeviceID, MidiOutProc dwCallback, uint dwInstance,
+        public static extern uint midiOutOpen(out IntPtr phmo, int uDeviceID, MidiOutProc dwCallback, uint dwInstance,
                                               uint fdwOpen);
 
 
@@ -348,7 +349,7 @@ namespace Midis.Interop
         ///dwInstance: DWORD_PTR->ULONG_PTR->unsigned int
         ///fdwOpen: DWORD->unsigned int
         [DllImport("winmm.dll", EntryPoint = "midiInOpen")]
-        public static extern uint midiInOpen(ref IntPtr phmi, int uDeviceID, MidiInProc dwCallback, uint dwInstance,
+        public static extern uint midiInOpen(out IntPtr phmi, int uDeviceID, MidiInProc dwCallback, uint dwInstance,
                                              uint fdwOpen);
     }
 }

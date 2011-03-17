@@ -2,14 +2,11 @@
 // See included LICENSE for details.
 namespace Midis
 {
-    public enum ChannelMessage
+    public class ChannelMessage
     {
-        NoteOff = 0x80,
-        NoteOn = 0x90,
-        PolyphonicPressure = 0xA0,
-        ControllerChange = 0xB0,
-        ProgramChange = 0xC0,
-        ChannelPressure = 0xD0,
-        PitchBend = 0xE0,
+        public ChannelMessageType MessageType { get; set; }
+        public int Channel { get; set; }
+        public int Value1 { get; set; }
+        public int Value2 { get; set; }
     }
 }

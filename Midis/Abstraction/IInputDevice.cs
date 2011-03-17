@@ -4,5 +4,8 @@ namespace Midis.Abstraction
 {
     using System;
 
-    public interface IInputDevice : IDisposable {}
+    public interface IInputDevice : IDisposable
+    {
+        event EventHandler<ChannelMessageEventArgs> ChannelMessage;
+    }
 }

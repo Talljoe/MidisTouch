@@ -3,6 +3,7 @@
 namespace Midis
 {
     using System;
+    using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
     using Midis.Abstraction;
@@ -10,6 +11,7 @@ namespace Midis
     public class MidiEnumerator
     {
         private readonly IMidiHAL hal;
+        private readonly LoopbackDevice lo = new LoopbackDevice();
 
         public MidiEnumerator(IMidiHAL hal)
         {
@@ -22,26 +24,38 @@ namespace Midis
 
         public IEnumerable<MidiInDescriptor> GetInputDevices()
         {
-            return Enumerable.Range(0, this.hal.GetInputDeviceCount())
+            var count = this.hal.GetInputDeviceCount();
+            return Enumerable.Range(0, count)
                 .Select(this.hal.GetInputDescriptor)
-                .Select(d => new MidiInDescriptor(d.Id, d.Name));
+                .Select(d => new MidiInDescriptor(d.Id, d.Name))
+                .Concat(new[] {new MidiInDescriptor(count, "Loopback")});
         }
 
         public IEnumerable<MidiOutDescriptor> GetOutputDevices()
         {
-            return Enumerable.Range(0, this.hal.GetOutputDeviceCount())
+            var count = this.hal.GetOutputDeviceCount();
+            return Enumerable.Range(0, count)
                 .Select(this.hal.GetOutputDescriptor)
-                .Select(d => new MidiOutDescriptor(d.Id, d.Name, d.PortType, d.WChannelMask));
+                .Select(d => new MidiOutDescriptor(d.Id, d.Name, d.PortType, d.WChannelMask))
+                .Concat(new[]
+                            {
+                                new MidiOutDescriptor(count, "Loopback", PortType.Port,
+                                                      new BitArray(new byte[] {0xff, 0xff}))
+                            });
         }
 
         public InputPort OpenMidiIn(int portId)
         {
-            return new InputPort(portId, this.hal.OpenInputDevice(portId));
+            return new InputPort(portId, portId < this.hal.GetInputDeviceCount()
+                                             ? this.hal.OpenInputDevice(portId)
+                                             : this.lo);
         }
 
         public OutputPort OpenMidiOut(int portId)
         {
-            return new OutputPort(portId, this.hal.OpenOutputDevice(portId));
+            return new OutputPort(portId, portId < this.hal.GetOutputDeviceCount()
+                                              ? this.hal.OpenOutputDevice(portId)
+                                              : this.lo);
         }
     }
 }

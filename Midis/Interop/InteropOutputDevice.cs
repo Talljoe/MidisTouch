@@ -7,9 +7,11 @@ namespace Midis.Interop
 
     public class InteropOutputDevice : InteropDeviceBase, IOutputDevice
     {
+        private readonly NativeMethods.MidiOutProc proc = MidiProc;
+
         public InteropOutputDevice(int portId)
         {
-            NativeMethods.midiOutOpen(ref this.Handle, portId, MidiProc, 0, NativeConstants.CALLBACK_FUNCTION);
+            NativeMethods.midiOutOpen(out this.Handle, portId, this.proc, 0, NativeConstants.CALLBACK_FUNCTION);
         }
 
         public void ShortMessage(int message)

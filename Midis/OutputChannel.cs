@@ -24,17 +24,17 @@ namespace Midis
 
         public void NoteOn(int note, int velocity = 127)
         {
-            this.Send(ChannelMessage.NoteOn, note, velocity);
+            this.Send(ChannelMessageType.NoteOn, note, velocity);
         }
 
         public void NoteOff(int note, int velocity = 0)
         {
-            this.Send(ChannelMessage.NoteOff, note, velocity);
+            this.Send(ChannelMessageType.NoteOff, note, velocity);
         }
 
-        private void Send(ChannelMessage message, int value1, int value2)
+        private void Send(ChannelMessageType messageType, int value1, int value2)
         {
-            this.channels.Run(channel => this.port.SendChannel(channel, message, value1, value2));
+            this.channels.Run(channel => this.port.SendChannel(channel, messageType, value1, value2));
         }
     }
 }
