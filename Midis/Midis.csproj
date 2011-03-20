@@ -121,6 +121,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Abstraction\ChannelMessageEventArgs.cs" />
+    <Compile Include="Abstraction\IDevice.cs" />
     <Compile Include="Abstraction\IInputDevice.cs" />
     <Compile Include="Abstraction\InputDeviceDescriptor.cs" />
     <Compile Include="Abstraction\OutputDeviceDescriptor.cs" />
@@ -157,6 +158,9 @@
     <Compile Include="OutputPort.cs" />
     <Compile Include="PortType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SharedDevice.cs" />
+    <Compile Include="SharedInputDevice.cs" />
+    <Compile Include="SharedOutputDevice.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
