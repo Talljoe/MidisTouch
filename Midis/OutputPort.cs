@@ -3,12 +3,14 @@
 namespace Midis
 {
     using System;
+    using System.Disposables;
     using Midis.Abstraction;
 
     public class OutputPort : IDisposable
     {
         private readonly IOutputDevice device;
         private readonly int id;
+        private readonly CompositeDisposable disposable = new CompositeDisposable();
 
         public OutputPort(int id, IOutputDevice device)
         {
@@ -37,6 +39,7 @@ namespace Midis
             if (disposing)
             {
                 this.device.Dispose();
+                this.disposable.Dispose();
             }
         }
 
@@ -52,9 +55,19 @@ namespace Midis
             this.Send((int) messageType | channel, val1, val2);
         }
 
+        public void SendMessage(ChannelMessage message)
+        {
+            this.SendChannel(message.Channel, message.MessageType, message.Value1, message.Value2);
+        }
+
         public OutputChannel OpenChannels(params int[] channels)
         {
             return new OutputChannel(this, channels);
+        }
+
+        public void Connect(IObservable<ChannelMessage> source)
+        {
+            this.disposable.Add(source.Subscribe(this.SendMessage));
         }
     }
 }

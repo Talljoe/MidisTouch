@@ -5,17 +5,17 @@ namespace Midis
     public class MidiInDescriptor
     {
         private readonly string name;
-        private readonly int portId;
+        private readonly int id;
 
-        public MidiInDescriptor(int portId, string name)
+        public MidiInDescriptor(int id, string name)
         {
-            this.portId = portId;
+            this.id = id;
             this.name = name;
         }
 
-        public int PortId
+        public int Id
         {
-            get { return this.portId; }
+            get { return this.id; }
         }
 
         public string Name
