@@ -132,6 +132,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Midis.Windows\Midis.Windows.csproj">
+      <Project>{05B6FDCC-274B-4E95-8BFD-3082A162877C}</Project>
+      <Name>Midis.Windows</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Midis\Midis.csproj">
       <Project>{3DA8350F-42B6-4259-A254-2BCDACC72340}</Project>
       <Name>Midis</Name>

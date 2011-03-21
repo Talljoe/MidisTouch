@@ -1,13 +1,14 @@
 ﻿// Copyright (c) 2011 Tall Ambitions, LLC
 // See included LICENSE for details.
-namespace Midis.Interop
+namespace Midis.Windows
 {
     using System;
     using System.Collections;
     using System.Runtime.InteropServices;
     using Midis.Abstraction;
+    using Midis.Windows.Interop;
 
-    public class InteropMidiHAL : IMidiHAL
+    public class Win32MidiHAL : IMidiHAL
     {
         public int GetInputDeviceCount()
         {
@@ -47,12 +48,12 @@ namespace Midis.Interop
 
         public IInputDevice OpenInputDevice(int portId)
         {
-            return new InteropInputDevice(portId);
+            return new Win32InputDevice(portId);
         }
 
         public IOutputDevice OpenOutputDevice(int portId)
         {
-            return new InteropOutputDevice(portId);
+            return new Win32OutputDevice(portId);
         }
     }
 }

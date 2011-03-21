@@ -1,13 +1,13 @@
 ﻿// Copyright (c) 2011 Tall Ambitions, LLC
 // See included LICENSE for details.
-namespace Midis.Interop
+namespace Midis.Windows.Interop
 {
     using System.Runtime.InteropServices;
 
     [StructLayout(LayoutKind.Sequential)]
-    public struct mmtime_tag_midi
+    public struct HMIDIIN__
     {
-        /// DWORD->unsigned int
-        public uint songptrpos;
+        /// int
+        public int unused;
     }
 }

@@ -1,11 +1,11 @@
 ﻿// Copyright (c) 2011 Tall Ambitions, LLC
 // See included LICENSE for details.
-namespace Midis.Interop
+namespace Midis.Windows.Interop
 {
     using System.Runtime.InteropServices;
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-    public struct tagMIDIOUTCAPSW
+    public struct tagMIDIINCAPSW
     {
         /// WORD->unsigned short
         public ushort wMid;
@@ -18,18 +18,6 @@ namespace Midis.Interop
 
         /// WCHAR[32]
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)] public string szPname;
-
-        /// WORD->unsigned short
-        public ushort wTechnology;
-
-        /// WORD->unsigned short
-        public ushort wVoices;
-
-        /// WORD->unsigned short
-        public ushort wNotes;
-
-        /// WORD->unsigned short
-        public ushort wChannelMask;
 
         /// DWORD->unsigned int
         public uint dwSupport;

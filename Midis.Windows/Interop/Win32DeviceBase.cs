@@ -1,10 +1,10 @@
 ﻿// Copyright (c) 2011 Tall Ambitions, LLC
 // See included LICENSE for details.
-namespace Midis.Interop
+namespace Midis.Windows.Interop
 {
     using System;
 
-    public abstract class InteropDeviceBase : IDisposable
+    public abstract class Win32DeviceBase : IDisposable
     {
         protected IntPtr Handle;
 
@@ -13,7 +13,7 @@ namespace Midis.Interop
             this.Dispose(true);
         }
 
-        ~InteropDeviceBase()
+        ~Win32DeviceBase()
         {
             this.Dispose(false);
         }

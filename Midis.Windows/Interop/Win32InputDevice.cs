@@ -1,15 +1,15 @@
 ﻿// Copyright (c) 2011 Tall Ambitions, LLC
 // See included LICENSE for details.
-namespace Midis.Interop
+namespace Midis.Windows.Interop
 {
     using System;
     using Midis.Abstraction;
 
-    public class InteropInputDevice : InteropDeviceBase, IInputDevice
+    public class Win32InputDevice : Win32DeviceBase, IInputDevice
     {
         private readonly NativeMethods.MidiInProc proc;
 
-        public InteropInputDevice(int portId)
+        public Win32InputDevice(int portId)
         {
             this.proc = this.MidiProc;
             NativeMethods.midiInOpen(out this.Handle, portId, this.proc, 0, NativeConstants.CALLBACK_FUNCTION);
