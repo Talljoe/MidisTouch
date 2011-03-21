@@ -43,9 +43,22 @@ namespace MidisTouch
                                 .Do(disposable.Add)
                                 .ToList();
 
-                if(inPorts.Any())
+                Console.WriteLine("Press any key to rescan...");
+                Console.ReadKey();
+                Console.WriteLine();
+                if (e.Rescan())
                 {
-                    outPorts.Run(p => p.Connect(inPorts[0].ChannelMessages));
+                    Console.WriteLine("Ports:");
+                    e.GetInputDevices().Run(portInfo => Console.WriteLine("  In {0} - {1}", portInfo.Id, portInfo.Name));
+                    e.GetOutputDevices().Run(
+                        portInfo => Console.WriteLine("  Out {0} - {1}: [{2}] {3}", portInfo.Id, portInfo.Name,
+                                                      portInfo.PortType,
+                                                      String.Concat(
+                                                          portInfo.WChannelMask.Cast<bool>().Select(b => b ? 'Y' : 'N'))));
+                }
+                else
+                {
+                    Console.WriteLine("No new devices found.");
                 }
                 Console.ReadKey();
             }

@@ -135,6 +135,8 @@
     <Compile Include="MidiInDescriptor.cs" />
     <Compile Include="MidiEnumerator.cs" />
     <Compile Include="MidiOutDescriptor.cs" />
+    <Compile Include="NullDevice.cs" />
+    <Compile Include="NullHal.cs" />
     <Compile Include="OutputChannel.cs" />
     <Compile Include="OutputPort.cs" />
     <Compile Include="PortType.cs" />

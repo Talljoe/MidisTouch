@@ -7,7 +7,7 @@ namespace Midis
 
     public class LoopbackDevice : IInputDevice, IOutputDevice
     {
-        public void Dispose() {}
+        public void Dispose() { }
 
         public event EventHandler<ChannelMessageEventArgs> ChannelMessage;
 

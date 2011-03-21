@@ -18,16 +18,16 @@ namespace Midis
 
         public MidiEnumerator(IEnumerable<IMidiHAL> hals)
         {
-            this.hals = hals ?? Enumerable.Empty<IMidiHAL>();
+            this.hals = (hals ?? Enumerable.Empty<IMidiHAL>()).MemoizeAll();
             this.inputDevices = this.GetDevices(hal => hal.GetInputDeviceCount());
             this.outputDevices = this.GetDevices(hal => hal.GetOutputDeviceCount());
         }
 
         private List<DeviceInfo> GetDevices(Func<IMidiHAL, int> deviceCountSelector)
         {
-            return this.hals.SelectMany(hal => Enumerable.Range(0, deviceCountSelector(hal)), (hal, portId) => new DeviceInfo { PortId = portId, Hal = hal })
+            return this.hals.SelectMany(hal => Enumerable.Range(0, deviceCountSelector(hal)), (hal, portId) => new { hal, portId })
+                            .Select((info, portId) => new DeviceInfo { GlobalPortId = portId, PortId = info.portId, Hal = info.hal })
                             .ToList();
-
         }
 
         public IEnumerable<MidiInDescriptor> GetInputDevices()
@@ -52,6 +52,37 @@ namespace Midis
         {
             var device = this.OpenMidi<SharedOutputDevice, IOutputDevice>(portId, openOutputDevices, this.GetOutputDevice);
             return new OutputPort(portId, device.Get());
+        }
+
+        public bool Rescan()
+        {
+            var hasNewInputDevices = this.DoRescan(this.inputDevices, hal => hal.GetInputDeviceCount());
+            var hasNewOutputDevices = this.DoRescan(this.outputDevices, hal => hal.GetOutputDeviceCount());
+            return hasNewInputDevices || hasNewOutputDevices;
+        }
+
+        private class LocalDeviceComparer : IEqualityComparer<DeviceInfo>
+        {
+            public bool Equals(DeviceInfo x, DeviceInfo y)
+            {
+                return x.PortId == y.PortId && ReferenceEquals(x.Hal, y.Hal);
+            }
+
+            public int GetHashCode(DeviceInfo obj)
+            {
+                return (obj.PortId.GetHashCode() ^ 397);
+            }
+        }
+
+        private bool DoRescan(List<DeviceInfo> deviceInfos, Func<IMidiHAL, int> deviceCountSelector)
+        {
+            var comparer = new LocalDeviceComparer();
+            var initialCount = deviceInfos.Count;
+            var newDevices = this.GetDevices(deviceCountSelector);
+            deviceInfos.AddRange(newDevices.Except(deviceInfos, comparer));
+            deviceInfos.Except(newDevices, comparer).Run(di => deviceInfos[di.GlobalPortId].Hal = NullDevice.Hal);
+            var finalCount = deviceInfos.Count;
+            return initialCount != finalCount;
         }
 
         private T OpenMidi<T, TDevice>(int portId, ConcurrentDictionary<int, Lazy<T>> devices, Func<int, T> getDeviceFunc)
@@ -107,6 +138,7 @@ namespace Midis
 
         private class DeviceInfo
         {
+            public int GlobalPortId { get; set; }
             public int PortId { get; set; }
             public IMidiHAL Hal { get; set; }
         }
