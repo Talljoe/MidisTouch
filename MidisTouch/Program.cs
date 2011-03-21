@@ -32,8 +32,8 @@ namespace MidisTouch
                                .Select(portInfo => e.OpenMidiIn(portInfo.Id))
                                .Do(disposable.Add)
                                .Do(port => port.ChannelMessages.Subscribe(
-                                            m => Console.WriteLine("{0}@{1}: ({2}, {3})",
-                                                m.MessageType, m.Channel, m.Value1, m.Value2)))
+                                            m => Console.WriteLine("{0}@{4}:{1}: ({2}, {3})",
+                                                m.MessageType, m.Channel, m.Value1, m.Value2, port.Id)))
                                .ToList();
 
                 var outPorts = e.GetOutputDevices()
@@ -43,23 +43,17 @@ namespace MidisTouch
                                 .Do(disposable.Add)
                                 .ToList();
 
-                Console.WriteLine("Press any key to rescan...");
-                Console.ReadKey();
-                Console.WriteLine();
-                if (e.Rescan())
-                {
-                    Console.WriteLine("Ports:");
-                    e.GetInputDevices().Run(portInfo => Console.WriteLine("  In {0} - {1}", portInfo.Id, portInfo.Name));
-                    e.GetOutputDevices().Run(
-                        portInfo => Console.WriteLine("  Out {0} - {1}: [{2}] {3}", portInfo.Id, portInfo.Name,
-                                                      portInfo.PortType,
-                                                      String.Concat(
-                                                          portInfo.WChannelMask.Cast<bool>().Select(b => b ? 'Y' : 'N'))));
-                }
-                else
-                {
-                    Console.WriteLine("No new devices found.");
-                }
+                var sustainMessages = inPorts.Select(ip => ip.ChannelMessages)
+                                             .Merge()
+                                             .Where(message => message.MessageType == ChannelMessageType.ControllerChange
+                                                            && message.Value1 == 64) // Sustain
+                                             .ToChannels(1, 2, 3, 4)
+                                             .Publish();
+                outPorts.Connect(sustainMessages);
+                disposable.Add(inPorts.ChannelMessages().MomentaryButton(30).Subscribe(Console.WriteLine));
+                disposable.Add(inPorts.ChannelMessages().ToggleButton(31).Subscribe(Console.WriteLine));
+                disposable.Add(sustainMessages.Connect());
+
                 Console.ReadKey();
             }
         }

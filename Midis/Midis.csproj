@@ -137,8 +137,10 @@
     <Compile Include="MidiOutDescriptor.cs" />
     <Compile Include="NullDevice.cs" />
     <Compile Include="NullHal.cs" />
+    <Compile Include="ChannelExtensions.cs" />
     <Compile Include="OutputChannel.cs" />
     <Compile Include="OutputPort.cs" />
+    <Compile Include="PortExtensions.cs" />
     <Compile Include="PortType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SharedDevice.cs" />

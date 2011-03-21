@@ -2,7 +2,7 @@
 // See included LICENSE for details.
 namespace Midis
 {
-    public class ChannelMessage
+    public struct ChannelMessage
     {
         public ChannelMessageType MessageType { get; set; }
         public int Channel { get; set; }
