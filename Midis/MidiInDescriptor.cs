@@ -4,8 +4,8 @@ namespace Midis
 {
     public class MidiInDescriptor
     {
-        private readonly string name;
         private readonly int id;
+        private readonly string name;
 
         public MidiInDescriptor(int id, string name)
         {

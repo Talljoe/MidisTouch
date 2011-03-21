@@ -8,9 +8,9 @@ namespace Midis
 
     public class InputPort : IDisposable
     {
+        private readonly IObservable<ChannelMessage> channelMessages;
         private readonly IInputDevice device;
         private readonly int id;
-        private readonly IObservable<ChannelMessage> channelMessages;
 
         public InputPort(int id, IInputDevice device)
         {
@@ -18,14 +18,14 @@ namespace Midis
             this.device = device;
             this.channelMessages = Observable.FromEvent<ChannelMessageEventArgs>(h => this.device.ChannelMessage += h,
                                                                                  h => this.device.ChannelMessage -= h)
-                                             .Select(e => e.EventArgs)
-                                             .Select(e => new ChannelMessage
-                                                              {
-                                                                  MessageType = (ChannelMessageType)e.Status,
-                                                                  Channel = e.Channel,
-                                                                  Value1 = e.Value1,
-                                                                  Value2 = e.Value2,
-                                                              });
+                .Select(e => e.EventArgs)
+                .Select(e => new ChannelMessage
+                                 {
+                                     MessageType = (ChannelMessageType) e.Status,
+                                     Channel = e.Channel,
+                                     Value1 = e.Value1,
+                                     Value2 = e.Value2,
+                                 });
         }
 
         public int Id

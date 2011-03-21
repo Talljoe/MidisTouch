@@ -130,6 +130,7 @@
     <Compile Include="Abstraction\IMidiHAL.cs" />
     <Compile Include="InputPort.cs" />
     <Compile Include="Abstraction\IOutputDevice.cs" />
+    <Compile Include="Loopback.cs" />
     <Compile Include="LoopbackDevice.cs" />
     <Compile Include="MidiInDescriptor.cs" />
     <Compile Include="MidiEnumerator.cs" />

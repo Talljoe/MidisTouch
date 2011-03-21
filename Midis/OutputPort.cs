@@ -9,8 +9,8 @@ namespace Midis
     public class OutputPort : IDisposable
     {
         private readonly IOutputDevice device;
-        private readonly int id;
         private readonly CompositeDisposable disposable = new CompositeDisposable();
+        private readonly int id;
 
         public OutputPort(int id, IOutputDevice device)
         {

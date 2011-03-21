@@ -7,7 +7,7 @@ namespace MidisTouch
     using System.Linq;
     using Midis;
     using Midis.Abstraction;
-    using Midis.Interop;
+    using Midis.Windows;
     using Ninject;
 
     internal class Program
@@ -15,7 +15,8 @@ namespace MidisTouch
         private static IKernel GetNinjectKernel()
         {
             var kernel = new StandardKernel();
-            kernel.Bind<IMidiHAL>().To<InteropMidiHAL>();
+            kernel.Bind<IMidiHAL>().To<Win32MidiHAL>();
+            kernel.Bind<IMidiHAL>().To<Loopback>().WithConstructorArgument("count", 1);
             return kernel;
         }
 
@@ -42,7 +43,10 @@ namespace MidisTouch
                                 .Do(disposable.Add)
                                 .ToList();
 
-                outPorts.Run(p => p.Connect(inPorts[0].ChannelMessages));
+                if(inPorts.Any())
+                {
+                    outPorts.Run(p => p.Connect(inPorts[0].ChannelMessages));
+                }
                 Console.ReadKey();
             }
         }

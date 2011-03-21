@@ -3,7 +3,6 @@
 namespace Midis
 {
     using System;
-    using System.Collections;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Linq;
@@ -11,40 +10,36 @@ namespace Midis
 
     public class MidiEnumerator : IDisposable
     {
-        private readonly IMidiHAL hal;
-        private readonly LoopbackDevice lo = new LoopbackDevice();
+        private readonly IEnumerable<IMidiHAL> hals;
         private readonly ConcurrentDictionary<int, Lazy<SharedInputDevice>> openInputDevices = new ConcurrentDictionary<int, Lazy<SharedInputDevice>>();
         private readonly ConcurrentDictionary<int, Lazy<SharedOutputDevice>> openOutputDevices = new ConcurrentDictionary<int, Lazy<SharedOutputDevice>>();
+        private readonly List<DeviceInfo> inputDevices;
+        private readonly List<DeviceInfo> outputDevices;
 
-        public MidiEnumerator(IMidiHAL hal)
+        public MidiEnumerator(IEnumerable<IMidiHAL> hals)
         {
-            if (hal == null)
-            {
-                throw new ArgumentNullException("hal");
-            }
-            this.hal = hal;
+            this.hals = hals ?? Enumerable.Empty<IMidiHAL>();
+            this.inputDevices = this.GetDevices(hal => hal.GetInputDeviceCount());
+            this.outputDevices = this.GetDevices(hal => hal.GetOutputDeviceCount());
+        }
+
+        private List<DeviceInfo> GetDevices(Func<IMidiHAL, int> deviceCountSelector)
+        {
+            return this.hals.SelectMany(hal => Enumerable.Range(0, deviceCountSelector(hal)), (hal, portId) => new DeviceInfo { PortId = portId, Hal = hal })
+                            .ToList();
+
         }
 
         public IEnumerable<MidiInDescriptor> GetInputDevices()
         {
-            var count = this.hal.GetInputDeviceCount();
-            return Enumerable.Range(0, count)
-                .Select(this.hal.GetInputDescriptor)
-                .Select(d => new MidiInDescriptor(d.Id, d.Name))
-                .Concat(new[] {new MidiInDescriptor(count, "Loopback")});
+            return inputDevices.Select(di => di.Hal.GetInputDescriptor(di.PortId))
+                               .Select((d, port) => new MidiInDescriptor(port, d.Name));
         }
 
         public IEnumerable<MidiOutDescriptor> GetOutputDevices()
         {
-            var count = this.hal.GetOutputDeviceCount();
-            return Enumerable.Range(0, count)
-                .Select(this.hal.GetOutputDescriptor)
-                .Select(d => new MidiOutDescriptor(d.Id, d.Name, d.PortType, d.WChannelMask))
-                .Concat(new[]
-                            {
-                                new MidiOutDescriptor(count, "Loopback", PortType.Port,
-                                                      new BitArray(new byte[] {0xff, 0xff}))
-                            });
+            return outputDevices.Select(di => di.Hal.GetOutputDescriptor(di.PortId))
+                                .Select((d, port) => new MidiOutDescriptor(port, d.Name, d.PortType, d.WChannelMask));
         }
 
         public InputPort OpenMidiIn(int portId)
@@ -81,18 +76,16 @@ namespace Midis
 
         private SharedInputDevice GetInputDevice(int portId)
         {
+            var deviceInfo = this.inputDevices[portId];
             return this.openInputDevices.GetOrAdd(portId, new Lazy<SharedInputDevice>(
-                    () => new SharedInputDevice(portId < this.hal.GetInputDeviceCount()
-                                                        ? this.hal.OpenInputDevice(portId)
-                                                        : this.lo))).Value;
+                    () => new SharedInputDevice(deviceInfo.Hal.OpenInputDevice(deviceInfo.PortId)))).Value;
         }
 
         private SharedOutputDevice GetOutputDevice(int portId)
         {
+            var deviceInfo = this.outputDevices[portId];
             return this.openOutputDevices.GetOrAdd(portId, new Lazy<SharedOutputDevice>(
-                    () => new SharedOutputDevice(portId < this.hal.GetOutputDeviceCount()
-                                                        ? this.hal.OpenOutputDevice(portId)
-                                                        : this.lo))).Value;
+                    () => new SharedOutputDevice(deviceInfo.Hal.OpenOutputDevice(deviceInfo.PortId)))).Value;
         }
 
         public void Dispose()
@@ -110,6 +103,12 @@ namespace Midis
                                      .Where(lazy => lazy.IsValueCreated)
                                      .Do(lazy => lazy.Value.Dispose());
             }
+        }
+
+        private class DeviceInfo
+        {
+            public int PortId { get; set; }
+            public IMidiHAL Hal { get; set; }
         }
     }
 }
