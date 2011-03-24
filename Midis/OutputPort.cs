@@ -50,9 +50,9 @@ namespace Midis
 
         public void SendChannel(int channel, ChannelMessageType messageType, int val1, int val2)
         {
-            if (channel < 0 || channel > 15)
+            if (channel < 1 || channel > 16)
                 throw new ArgumentOutOfRangeException("channel", @"Invalid channel number");
-            this.Send((int) messageType | channel, val1, val2);
+            this.Send((int) messageType | (channel - 1), val1, val2);
         }
 
         public void SendMessage(ChannelMessage message)

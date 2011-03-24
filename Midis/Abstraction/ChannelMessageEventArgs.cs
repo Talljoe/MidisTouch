@@ -6,16 +6,14 @@ namespace Midis.Abstraction
 
     public class ChannelMessageEventArgs : EventArgs
     {
-        public ChannelMessageEventArgs(int status, int channel, int value1, int value2)
+        public ChannelMessageEventArgs(int message, int value1, int value2)
         {
-            this.Status = status;
-            this.Channel = channel;
+            this.Message = message;
             this.Value1 = value1;
             this.Value2 = value2;
         }
 
-        public int Status { get; private set; }
-        public int Channel { get; private set; }
+        public int Message { get; private set; }
         public int Value1 { get; private set; }
         public int Value2 { get; private set; }
     }

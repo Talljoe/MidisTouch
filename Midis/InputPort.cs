@@ -18,14 +18,14 @@ namespace Midis
             this.device = device;
             this.channelMessages = Observable.FromEvent<ChannelMessageEventArgs>(h => this.device.ChannelMessage += h,
                                                                                  h => this.device.ChannelMessage -= h)
-                .Select(e => e.EventArgs)
-                .Select(e => new ChannelMessage
-                                 {
-                                     MessageType = (ChannelMessageType) e.Status,
-                                     Channel = e.Channel,
-                                     Value1 = e.Value1,
-                                     Value2 = e.Value2,
-                                 });
+                                             .Select(e => e.EventArgs)
+                                             .Select(e => new ChannelMessage
+                                                              {
+                                                                  MessageType = (ChannelMessageType) (e.Message & 0xf0),
+                                                                  Channel = (e.Message & 0x0f) + 1,
+                                                                  Value1 = e.Value1,
+                                                                  Value2 = e.Value2,
+                                                              });
         }
 
         public int Id

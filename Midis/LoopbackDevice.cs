@@ -17,8 +17,7 @@ namespace Midis
             var status = bytes[0];
             if (status >= 0x80 && status <= 0xef)
             {
-                this.InvokeChannelMessage(new ChannelMessageEventArgs(
-                                              status & 0xf0, bytes[0] & 0x0f, bytes[1], bytes[2]));
+                this.InvokeChannelMessage(new ChannelMessageEventArgs(status, bytes[1], bytes[2]));
             }
         }
 

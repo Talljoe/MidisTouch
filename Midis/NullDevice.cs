@@ -12,7 +12,7 @@ namespace Midis
 
         public void Dispose() {}
 
-        public event EventHandler<ChannelMessageEventArgs> ChannelMessage;
+        public event EventHandler<ChannelMessageEventArgs> ChannelMessage { add { } remove { } }
 
         public void ShortMessage(int message) {}
     }
