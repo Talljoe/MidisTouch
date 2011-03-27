@@ -3,11 +3,21 @@
 namespace Midis
 {
     using System;
+    using System.Disposables;
+    using System.Threading;
     using Midis.Abstraction;
 
     public class LoopbackDevice : IInputDevice, IOutputDevice
     {
-        public void Dispose() { }
+        private readonly BooleanDisposable disposable = new BooleanDisposable();
+
+        public void Dispose()
+        {
+            lock(disposable)
+            {
+                this.disposable.Dispose();
+            }
+        }
 
         public event EventHandler<ChannelMessageEventArgs> ChannelMessage;
 
@@ -17,14 +27,20 @@ namespace Midis
             var status = bytes[0];
             if (status >= 0x80 && status <= 0xef)
             {
-                this.InvokeChannelMessage(new ChannelMessageEventArgs(status, bytes[1], bytes[2]));
+                ThreadPool.QueueUserWorkItem(_ => this.InvokeChannelMessage(new ChannelMessageEventArgs(status, bytes[1], bytes[2])));
             }
         }
 
         private void InvokeChannelMessage(ChannelMessageEventArgs e)
         {
-            var handler = this.ChannelMessage;
-            if (handler != null) handler(this, e);
+            lock (this.disposable)
+            {
+                if (!this.disposable.IsDisposed)
+                {
+                    var handler = this.ChannelMessage;
+                    if (handler != null) handler(this, e);
+                }
+            }
         }
     }
 }
