@@ -9,6 +9,21 @@ namespace Midis
 
     public static class ChannelExtensions
     {
+        public static void ConnectTo(this IObservable<ChannelMessage> source, IEnumerable<OutputPort> ports)
+        {
+            ports.Connect(source);
+        }
+
+        public static void ConnectTo(this IObservable<ChannelMessage> source, params OutputPort[] ports)
+        {
+            ports.Connect(source);
+        }
+
+        public static void ConnectTo(this IObservable<ChannelMessage> source, OutputPort port)
+        {
+            port.Connect(source);
+        }
+
         public static IObservable<ChannelMessage> ToChannel(this IObservable<ChannelMessage> source, int channel)
         {
             return source.ToChannels(channel);
@@ -60,6 +75,17 @@ namespace Midis
             return source.Where(message => message.MessageType == type);
         }
 
+        public static IObservable<ChannelMessage> OfMessageTypes(this IObservable<ChannelMessage> source, params ChannelMessageType[] types)
+        {
+            return source.OfMessageTypes((IEnumerable<ChannelMessageType>) types);
+        }
+
+        public static IObservable<ChannelMessage> OfMessageTypes(this IObservable<ChannelMessage> source, IEnumerable<ChannelMessageType> types)
+        {
+            var set = new HashSet<ChannelMessageType>(types);
+            return source.Where(message => set.Contains(message.MessageType));
+        }
+
         public static IObservable<bool> MomentaryButton(this IObservable<ChannelMessage> source, int controller)
         {
             return source.OfMessageType(ChannelMessageType.ControllerChange)
@@ -71,6 +97,18 @@ namespace Midis
         public static IObservable<bool> ToggleButton(this IObservable<ChannelMessage> source, int controller)
         {
             return source.MomentaryButton(controller).Where(b => b).Scan((acc, _) => !acc);
+        }
+
+        public static IObservable<ChannelMessage> ToControllerMessage(this IObservable<bool> source, int controller, int channel = 1)
+        {
+            return source.Select(
+                b => new ChannelMessage
+                         {
+                             MessageType = ChannelMessageType.ControllerChange,
+                             Channel = channel,
+                             Value1 = controller,
+                             Value2 = b ? 127 : 0
+                         });
         }
     }
 }
