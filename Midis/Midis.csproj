@@ -125,9 +125,11 @@
     <Compile Include="Abstraction\IInputDevice.cs" />
     <Compile Include="Abstraction\InputDeviceDescriptor.cs" />
     <Compile Include="Abstraction\OutputDeviceDescriptor.cs" />
+    <Compile Include="Components\BreakoutBox.cs" />
     <Compile Include="ChannelMessage.cs" />
     <Compile Include="ChannelMessageType.cs" />
     <Compile Include="Abstraction\IMidiHAL.cs" />
+    <Compile Include="Components\ComponentExtensions.cs" />
     <Compile Include="InputPort.cs" />
     <Compile Include="Abstraction\IOutputDevice.cs" />
     <Compile Include="Devices\Loopback.cs" />

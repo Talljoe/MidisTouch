@@ -7,6 +7,7 @@ namespace MidisTouch
     using System.Linq;
     using Midis;
     using Midis.Abstraction;
+    using Midis.Components;
     using Midis.Devices;
     using Midis.Windows;
     using Ninject;
@@ -44,18 +45,16 @@ namespace MidisTouch
                                 .Do(disposable.Add)
                                 .ToList();
 
-                var sustainMessages = inPorts.Select(ip => ip.ChannelMessages)
-                                             .Merge()
-                                             .Where(message => message.MessageType == ChannelMessageType.ControllerChange
-                                                            && message.Value1 == 64) // Sustain
-                                             .ToChannels(1, 2, 3, 4)
-                                             .Publish();
-                outPorts.Connect(sustainMessages);
-                disposable.Add(inPorts.ChannelMessages().MomentaryButton(30).Subscribe(Console.WriteLine));
-                disposable.Add(inPorts.ChannelMessages().ToggleButton(31).Subscribe(Console.WriteLine));
-                disposable.Add(sustainMessages.Connect());
-
-                Console.ReadKey();
+                using (var channelMessages = inPorts.ChannelMessages().BreakOut())
+                {
+                    channelMessages.Notes.ConnectTo(outPorts);
+                    channelMessages.ControllerChange
+                                   .Where(message => message.Value1 == 64) // Sustain
+                                   .ToChannels(1, 2, 3, 4)
+                                   .ConnectTo(outPorts);
+                    channelMessages.ProgramChange.ToChannel(1).ConnectTo(outPorts);
+                    Console.ReadKey();
+                }
             }
         }
     }
