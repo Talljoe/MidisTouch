@@ -7,6 +7,7 @@ namespace MidisTouch
     using System.Linq;
     using Midis;
     using Midis.Abstraction;
+    using Midis.Devices;
     using Midis.Windows;
     using Ninject;
 

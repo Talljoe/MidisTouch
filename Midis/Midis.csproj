@@ -130,22 +130,22 @@
     <Compile Include="Abstraction\IMidiHAL.cs" />
     <Compile Include="InputPort.cs" />
     <Compile Include="Abstraction\IOutputDevice.cs" />
-    <Compile Include="Loopback.cs" />
-    <Compile Include="LoopbackDevice.cs" />
+    <Compile Include="Devices\Loopback.cs" />
+    <Compile Include="Devices\LoopbackDevice.cs" />
     <Compile Include="MidiInDescriptor.cs" />
     <Compile Include="MidiEnumerator.cs" />
     <Compile Include="MidiOutDescriptor.cs" />
-    <Compile Include="NullDevice.cs" />
-    <Compile Include="NullHal.cs" />
+    <Compile Include="Devices\NullDevice.cs" />
+    <Compile Include="Devices\NullHal.cs" />
     <Compile Include="ChannelExtensions.cs" />
     <Compile Include="OutputChannel.cs" />
     <Compile Include="OutputPort.cs" />
     <Compile Include="PortExtensions.cs" />
     <Compile Include="PortType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SharedDevice.cs" />
-    <Compile Include="SharedInputDevice.cs" />
-    <Compile Include="SharedOutputDevice.cs" />
+    <Compile Include="Devices\SharedDevice.cs" />
+    <Compile Include="Devices\SharedInputDevice.cs" />
+    <Compile Include="Devices\SharedOutputDevice.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

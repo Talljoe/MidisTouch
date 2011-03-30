@@ -7,6 +7,7 @@ namespace Midis
     using System.Collections.Generic;
     using System.Linq;
     using Midis.Abstraction;
+    using Midis.Devices;
 
     public class MidiEnumerator : IDisposable
     {
