@@ -133,7 +133,40 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ControllerChangeExtensions\Clamp.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Clamp.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Context\ChannelMessageObservableContext.cs" />
+    <Compile Include="ControllerChangeExtensions\Bindings\Given.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ControllerChangeExtensions\Bindings\Then.cs" />
+    <Compile Include="ControllerChangeExtensions\ToRange.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ToRange.feature</DependentUpon>
+    </Compile>
+    <Compile Include="ControllerChangeExtensions\Bindings\When.cs" />
+    <Compile Include="Utility\Conversion.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="ControllerChangeExtensions\Clamp.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Clamp.feature.cs</LastGenOutput>
+    </None>
+    <None Include="packages.config" />
+    <None Include="ControllerChangeExtensions\ToRange.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>ToRange.feature.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Midis\Midis.csproj">
+      <Project>{3DA8350F-42B6-4259-A254-2BCDACC72340}</Project>
+      <Name>Midis</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
