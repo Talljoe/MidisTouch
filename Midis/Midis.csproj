@@ -149,6 +149,7 @@
     <Compile Include="Devices\SharedDevice.cs" />
     <Compile Include="Devices\SharedInputDevice.cs" />
     <Compile Include="Devices\SharedOutputDevice.cs" />
+    <Compile Include="Utility\Composition.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
